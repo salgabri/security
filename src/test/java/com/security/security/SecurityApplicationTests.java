@@ -53,8 +53,7 @@ class SecurityApplicationTests {
     @Test
     void testFailureWhenAuthenticatedAndStudentRole() throws Exception {
         mockMvc.perform(get("/api/v1/students/1")
-                .with(httpBasic("STUDENT", "123")))
-                .andExpect(status().isOk());
+                .with(httpBasic("ADMIN", "123")))
+                .andExpect(status().isForbidden());
     }
-
 }
