@@ -23,12 +23,12 @@ import static com.security.security.UserRole.*;
 
 @Configuration
 @EnableWebSecurity
-public class UserConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserConfig(PasswordEncoder passwordEncoder) {
+    public SecurityConfig(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -66,7 +66,7 @@ public class UserConfig extends WebSecurityConfigurerAdapter {
                     .csrf()
                     .and()
                     .authorizeRequests()
-                    .anyRequest().authenticated()
+                    .anyRequest().hasRole("STUDENT")
                     .and()
                     .formLogin()
                     .loginPage("/login");
@@ -107,6 +107,7 @@ public class UserConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         HttpMethod.GET,
                         "/",
+                        "/login",
                         "/*.html",
                         "/**/favicon.ico",
                         "/**/*.html",
