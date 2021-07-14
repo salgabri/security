@@ -1,59 +1,21 @@
 package com.security.security.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
-import static com.security.security.UserPermission.*;
-import static com.security.security.UserRole.*;
+import static com.security.security.UserPermission.COURSE_WRITE;
+import static com.security.security.UserPermission.STUDENT_WRITE;
+import static com.security.security.UserRole.STUDENT;
 
 @Configuration
-@EnableWebSecurity
+@Order(1)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public SecurityConfig(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    @Override
-    @Bean
-    protected UserDetailsService userDetailsService() {
-        UserDetails user = User.builder()
-                .username("STUDENT")
-                .password(passwordEncoder.encode("123"))
-                .authorities(STUDENT.getAuthorities())
-                .build();
-
-        UserDetails userTwo = User.builder()
-                .username("ADMIN")
-                .password(passwordEncoder.encode("123"))
-                .authorities(ADMIN.getAuthorities())
-                .build();
-
-        UserDetails userThree = User.builder()
-                .username("ADMINTRAINEE")
-                .password(passwordEncoder.encode("123"))
-                .authorities(ADMINTRAINEE.getAuthorities())
-                .build();
-
-        return new InMemoryUserDetailsManager(user, userTwo, userThree);
-    }
+public class BasicHttpSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
