@@ -63,13 +63,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         protected void configure(HttpSecurity http) throws Exception {
             http
                     .antMatcher("/page-api/**")
-                    .csrf()
+                    .csrf().disable()
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     .and()
                     .authorizeRequests()
                     .anyRequest().hasRole("STUDENT")
                     .and()
-                    .formLogin()
-                    .loginPage("/login");
+                    .formLogin();
         }
     }
 
@@ -107,7 +107,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         HttpMethod.GET,
                         "/",
-                        "/login",
                         "/*.html",
                         "/**/favicon.ico",
                         "/**/*.html",
