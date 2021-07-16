@@ -1,5 +1,6 @@
 package com.security.security.config;
 
+import com.security.security.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static com.security.security.UserPermission.COURSE_WRITE;
 import static com.security.security.UserPermission.STUDENT_WRITE;
@@ -97,6 +99,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.PUT, "/api/v1/management/**").hasAnyAuthority(STUDENT_WRITE.getPermission(), COURSE_WRITE.getPermission())
                     .and()
                     .httpBasic();
+        }
+    }
+
+    @Order(0)
+    @Configuration
+    public static class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                    .csrf().disable()
+                    .cors().disable()
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
+                    .authorizeRequests()
+                    .antMatchers("/login").authenticated()
+                    .and()
+                    .addFilterBefore(
+                            new JwtUsernameAndPasswordAuthenticationFilter
+                                    (authenticationManager()), UsernamePasswordAuthenticationFilter.class);
         }
     }
 
